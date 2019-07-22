@@ -11,6 +11,8 @@ import java.util.Scanner;
 
 import com.dzionsla.model.Person;
 import com.dzionsla.reports.EmployeeReport;
+import com.dzionsla.reports.PdfReport;
+import com.dzionsla.reports.XlsReport;
 import com.dzionsla.xlsxParser.ExcelReader;
 import com.dzionsla.xlsxParser.FileList;
 
@@ -25,16 +27,6 @@ public class App {
 		ExcelReader read = new ExcelReader();
 		ArrayList<Person> persons = read.readXls(list.getFileList());
 		
-//		for (Person person : persons) {
-//			System.out.println(person.getFullName());
-//			for (Project project : person.getProjects()) {
-//				System.out.println(project.getName());
-//				for (Issue issue : project.getIssues()) {
-//					System.out.println(issue.getDate() + " " + issue.getTask() + " " + issue.getHours());
-//				}
-//			}
-//			System.out.println();	
-//		}
 		//System.out.println("Raport numer 1:");
 		//EmployeeReport report1 = new EmployeeReport();
 		//report1.firstReport(persons, "Marek_Wiecek.xls");
@@ -49,15 +41,18 @@ public class App {
 //		EmployeeReport report2 = new EmployeeReport();
 //		report2.secondReport(persons, "Marek_Wiecek.xls", date1, date2);
 		//System.out.println();
-		//System.out.println("Raport numer 3:");
-		//EmployeeReport report3 = new EmployeeReport();
-		//report3.thirdReport(persons);
+		System.out.println("Raport numer 3:");
+		EmployeeReport report3 = new EmployeeReport();
+		report3.thirdReport(persons);
 		//System.out.println();
-		System.out.println("Raport numer 4:");
-		EmployeeReport report4 = new EmployeeReport();
-		report4.fourthReport(persons);
+//		System.out.println("Raport numer 4:");
+//		EmployeeReport report4 = new EmployeeReport();
+//		report4.fourthReport(persons);
 		
-		
+		//XlsReport xlsReport = new XlsReport(3, report3.getRep());
+		//XlsReport xlsReport = new XlsReport( report3.getList(),3);
+		//PdfReport pdfReport = new PdfReport(4, report4.getRep());
+		//PdfReport pdfReport = new PdfReport(report3.getList(),3); //nie zrobione jeszcze
 		//mainMenu();
 		
 	}

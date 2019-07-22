@@ -2,9 +2,11 @@ package com.dzionsla.reports;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.dzionsla.model.Issue;
 import com.dzionsla.model.Person;
@@ -13,11 +15,20 @@ import com.dzionsla.model.Project;
 public class EmployeeReport {
 	
 	Map<String, Double> rep = new LinkedHashMap<String, Double>();
+	Map<String, Map<String, Double>> list = new LinkedHashMap<String, Map<String, Double>>();
+	
+	public Map<String, Double> getRep() {
+		return rep;
+	}
+	
+	public Map<String, Map<String, Double>> getList() {
+		return list;
+	}
 	
 	public void clear() {
 		rep.clear();
 	}
-	
+
 	public void add(String name, double hours) {
 		if (rep.containsKey(name)) {
 			update(name, hours);
@@ -31,7 +42,6 @@ public class EmployeeReport {
 	}	
 	
 // -------------------------------------------------- RAPORTS ------------------------------------------------
-	// all reports
 	
 	// Dla podanego nazwiska tworzy raport z iloscia przepracowanych godzin na wszystkie projekt
 	public void firstReport(ArrayList<Person> persons, String fullName) {
@@ -81,19 +91,28 @@ public class EmployeeReport {
 	
 	// Wypisuje wszystkie Nazwiska i ich projekty
 	public void thirdReport(ArrayList<Person> persons) {
-		List<Map> list = new ArrayList();
+		Map<String, Double> localRep;
 		for (Person person : persons) {	
-			System.out.println(person.getFullName());
+			//System.out.println(person.getFullName());
+			localRep = new LinkedHashMap<String, Double>();
 			for (Project project : person.getProjects()) {
 				for (Issue issue : project.getIssues()) {
-					add(project.getName(), issue.getHours());
-				}
+					if (localRep.containsKey(project.getName())) {
+						localRep.put(project.getName(), localRep.get(project.getName()) + issue.getHours());
+					} else {
+						localRep.put(project.getName(), issue.getHours());
+					}
+				}	
 			}
-			rep.forEach((key, value) -> System.out.println(key + ": " + value));
-			rep.clear();
+			list.put(person.getFullName(), localRep);
 		}
-		
+		for (Map.Entry<String, Map<String, Double>> ls : list.entrySet()) {
+			System.out.println(ls.getKey());
+			ls.getValue().forEach((key, value) -> System.out.println(key + ": " + value));
+		}
+
 	}
+	
 	// Wypisuje wszystkie projekty i wszystkie godziny na nie przeznaczone
 	public void fourthReport(ArrayList<Person> persons) {
 		for (Person person : persons) {	
