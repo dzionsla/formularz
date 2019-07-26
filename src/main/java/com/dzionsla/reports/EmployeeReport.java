@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Stream;
 
 import com.dzionsla.model.Issue;
 import com.dzionsla.model.Person;
@@ -68,6 +69,7 @@ public class EmployeeReport {
 //				}
 			}
 		}
+		
 		rep.forEach((key, value) -> System.out.println(key + ": " + value));	
 	}
 	

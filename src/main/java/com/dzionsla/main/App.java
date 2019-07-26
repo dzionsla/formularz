@@ -7,8 +7,15 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Stream;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
+
+import com.dzionsla.model.Model;
+import com.dzionsla.model.ModelDAO;
 import com.dzionsla.model.Person;
 import com.dzionsla.reports.EmployeeReport;
 import com.dzionsla.reports.PdfReport;
@@ -24,12 +31,30 @@ public class App {
 		File folder = new File("C:\\projects\\java\\Formularz\\src\\main\\resources");
 		list.fileListPath(folder);
 		
-		ExcelReader read = new ExcelReader();
-		ArrayList<Person> persons = read.readXls(list.getFileList());
+		ApplicationContext appContext = new FileSystemXmlApplicationContext("appContext.xml");
+		ModelDAO myModelDAO = appContext.getBean("modelDAO", ModelDAO.class);
+		myModelDAO.deleteTable("model");
+		myModelDAO.createTable("model");
+		//Model m = new Model(1, "2", "3", new Date(), "5", 6);
+		//myModelDAO.addFoodGroup(m);
 		
-		//System.out.println("Raport numer 1:");
-		//EmployeeReport report1 = new EmployeeReport();
-		//report1.firstReport(persons, "Marek_Wiecek.xls");
+		
+		ExcelReader read = new ExcelReader();
+		ArrayList<Person> persons = read.readXls(list.getFileList(), myModelDAO);
+		
+		//System.out.println(myModelDAO.getModelById(10).toString());
+		
+		//myModelDAO.getModelsByPersonName("Duda_Olaf.xls");
+		
+		//myModelDAO.getModelsByPersonName("Marek_Wiecek.xls").forEach(System.out::println);
+		
+		String sDate1="2012-02-00";
+		String sDate2="2013-02-00";   
+	     
+		myModelDAO.getModelsByProjectDate(sDate1, sDate2).forEach(System.out::println);
+//		System.out.println("Raport numer 1:");
+//		EmployeeReport report1 = new EmployeeReport();
+//		report1.firstReport(persons, "Marek_Wiecek.xls");
 		//report1.firstReport(persons, "Duda_Olaf.xls");
 		//System.out.println();
 //		System.out.println("Raport numer 2:");
@@ -41,9 +66,9 @@ public class App {
 //		EmployeeReport report2 = new EmployeeReport();
 //		report2.secondReport(persons, "Marek_Wiecek.xls", date1, date2);
 		//System.out.println();
-		System.out.println("Raport numer 3:");
-		EmployeeReport report3 = new EmployeeReport();
-		report3.thirdReport(persons);
+		//System.out.println("Raport numer 3:");
+		//EmployeeReport report3 = new EmployeeReport();
+		//report3.thirdReport(persons);
 		//System.out.println();
 //		System.out.println("Raport numer 4:");
 //		EmployeeReport report4 = new EmployeeReport();
@@ -54,6 +79,12 @@ public class App {
 		//PdfReport pdfReport = new PdfReport(4, report4.getRep());
 		//PdfReport pdfReport = new PdfReport(report3.getList(),3); //nie zrobione jeszcze
 		//mainMenu();
+		
+		//ApplicationContext appContext = new FileSystemXmlApplicationContext("appContext.xml");
+		
+		
+		
+		((FileSystemXmlApplicationContext) appContext).close();
 		
 	}
 	

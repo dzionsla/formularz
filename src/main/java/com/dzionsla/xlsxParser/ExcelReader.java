@@ -13,6 +13,8 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 
 import com.dzionsla.model.Issue;
+import com.dzionsla.model.Model;
+import com.dzionsla.model.ModelDAO;
 import com.dzionsla.model.Person;
 import com.dzionsla.model.Project;
 
@@ -21,23 +23,27 @@ public class ExcelReader {
 	
 
 	//Nowak_Piotr.xls
-	public ArrayList<Person> readXls(ArrayList<File> fileList) throws FileNotFoundException, IOException{
+	public ArrayList<Person> readXls(ArrayList<File> fileList, ModelDAO myModelDAO) throws FileNotFoundException, IOException{
 		int rowCtr = 0;
 		int cellCtr = 0;
 
 	    for (File file : fileList) {
 	    	ArrayList<Project> projects = new ArrayList<Project>();
 	    	Person person = new Person();
+	    	Model model = new Model();
+	    	
 	    	//System.out.println(file.getName());
 	    	person.setFullName(file.getName());
+	    	model.setPersonFullName(file.getName());
 	    	FileInputStream fis = new FileInputStream(file);
 	    	// we create an XSSF Workbook object for our XLSX Excel File
 		    HSSFWorkbook workbook = new HSSFWorkbook(fis);
-
+ 
 		    for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
 		    	ArrayList<Issue> issues = new ArrayList<Issue>();
 		    	Project project = new Project();
 				project.setName(workbook.getSheetName(i));
+				model.setProjectName(workbook.getSheetName(i));
 				
 				HSSFSheet sheet = workbook.getSheetAt(i);
 
@@ -56,16 +62,21 @@ public class ExcelReader {
 					        Cell cell = cellIterator.next();
 					        if (cellCtr == 0) {
 					        	issue.setDate(cell.getDateCellValue());
+					        	model.setDate(cell.getDateCellValue());
 					        	//System.out.print(issue.getDate());
 							} else if (cellCtr == 1) {
 								issue.setTask(cell.toString());
+								model.setTask(cell.toString());
 								//System.out.print(issue.getTask());
 							} else if (cellCtr == 2) {
 								issue.setHours(cell.getNumericCellValue());
+								model.setHours(cell.getNumericCellValue());
 								//System.out.print(issue.getHours());
 							}		        
 					        cellCtr++;
+					        
 					    }
+					    myModelDAO.addFoodGroup(model);
 					    
 					    cellCtr = 0;
 					    issues.add(issue);
@@ -84,6 +95,8 @@ public class ExcelReader {
 		    workbook.close();
 		    fis.close();
 		    persons.add(person);
+		    
+		    
 		}
 		return persons;
 	}
